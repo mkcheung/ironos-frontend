@@ -1,26 +1,89 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+/* ── IronOS Design Tokens ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --graphite: #14110F;
+  --slate: #211C19;
+  --bone: #EFEAE0;
+  --bronze: #B08D57;
+  --cordovan: #6E2B2B;
+  --ash: #8A817A;
+
+  /* Semantic */
+  --background: var(--graphite);
+  --surface: var(--slate);
+  --foreground: var(--bone);
+  --accent: var(--bronze);
+  --muted: var(--ash);
+  --destructive: var(--cordovan);
+  --warning: #9A7B3F;
+
+  /* Elevation shadow */
+  --shadow-warm: 0 2px 12px 0 rgba(20,17,15,0.45);
+
+  /* Radius */
+  --radius: 4px;
+  --radius-md: 6px;
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* shadcn compat overrides */
+  --card: var(--slate);
+  --card-foreground: var(--bone);
+  --popover: var(--slate);
+  --popover-foreground: var(--bone);
+  --primary: var(--bone);
+  --primary-foreground: var(--graphite);
+  --secondary: var(--slate);
+  --secondary-foreground: var(--bone);
+  --muted-foreground: var(--ash);
+  --border: var(--ash);
+  --input: var(--ash);
+  --ring: var(--bronze);
+  --accent-foreground: var(--bone);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-destructive: var(--destructive);
+  --color-graphite: var(--graphite);
+  --color-slate: var(--slate);
+  --color-bone: var(--bone);
+  --color-bronze: var(--bronze);
+  --color-cordovan: var(--cordovan);
+  --color-ash: var(--ash);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+  --radius: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bronze focus ring */
+*:focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 2px;
+  border-radius: var(--radius);
 }

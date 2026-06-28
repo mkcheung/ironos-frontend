@@ -1,65 +1,79 @@
-import Image from "next/image";
+"use client";
+
+import { AppShell } from "@/components/layout/shell";
+import { DossierStat } from "@/components/ui/dossier-stat";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { notify } from "@/lib/notify";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Trophy } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <AppShell>
+      {/* Hero section */}
+      <section className="mb-16">
+        <Eyebrow className="mb-3">Weekly Performance Summary</Eyebrow>
+        <h1
+          className="text-6xl font-light tracking-tight text-bone mb-2"
+          style={{ fontFamily: "var(--font-fraunces)" }}
+        >
+          Week 24
+        </h1>
+        <p className="text-ash text-sm max-w-md">
+          Your training data, analysed. Recommendations follow the evidence.
+        </p>
+      </section>
+
+      {/* Stat block row */}
+      <section className="mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+          <DossierStat value="4" label="Sessions" unit="wk" />
+          <DossierStat value="12,480" label="Total Volume" unit="kg" />
+          <DossierStat value="87" label="Readiness" unit="%" />
+          <DossierStat value="142" label="PR Distance" unit="days" />
+        </div>
+      </section>
+
+      {/* Card row */}
+      <section className="mb-12 grid sm:grid-cols-2 gap-4">
+        <Card className="bg-slate border-ash/20 p-6 rounded-[var(--radius-md)] shadow-[var(--shadow-warm)]">
+          <div className="flex items-center gap-2 mb-4">
+            <Trophy size={16} strokeWidth={1.5} className="text-bronze" />
+            <Eyebrow>Goal Progress</Eyebrow>
+          </div>
+          <DossierStat value="68" label="Strength Score" unit="pts" className="mb-2" />
+          <p className="text-ash text-xs mt-3">
+            On track — 32 points to target by Q3.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        </Card>
+
+        <Card className="bg-slate border-ash/20 p-6 rounded-[var(--radius-md)] shadow-[var(--shadow-warm)]">
+          <Eyebrow className="mb-4">Next Session</Eyebrow>
+          <DossierStat value="Tue" label="Recommended Day" className="mb-2" />
+          <p className="text-ash text-xs mt-3">
+            Lower body — squat progression continues.
+          </p>
+        </Card>
+      </section>
+
+      {/* Toast test */}
+      <section className="flex gap-3 flex-wrap">
+        <Button
+          onClick={() => notify.success("Workout logged")}
+          className="bg-bronze/10 text-bronze border border-bronze/30 hover:bg-bronze/20 transition-colors"
+          variant="outline"
+        >
+          Test success toast
+        </Button>
+        <Button
+          onClick={() => notify.error("Something went wrong — try again.")}
+          variant="outline"
+          className="border-ash/30 text-ash hover:text-bone hover:border-ash/60 transition-colors"
+        >
+          Test error toast
+        </Button>
+      </section>
+    </AppShell>
   );
 }
