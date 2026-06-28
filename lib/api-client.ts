@@ -1,25 +1,48 @@
+import { getAccessToken as getTokenFromContext, updateAccessToken } from "@/lib/auth-context";
+import { notify } from "@/lib/notify";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+// Will be set by AuthProvider once available in client context
+let _clearTokensFn: (() => void) | null = null;
+let _setTokensFn: ((access: string, user: import("@/lib/auth-context").User) => void) | null =
+  null;
+
+/** Called once by AuthProvider to wire up the logout callback */
+export function registerAuthHandlers(
+  setTokens: (access: string, user: import("@/lib/auth-context").User) => void,
+  clearTokens: () => void
+): void {
+  _setTokensFn = setTokens;
+  _clearTokensFn = clearTokens;
+}
 
 type FetchOptions = Omit<RequestInit, "headers"> & {
   headers?: Record<string, string>;
 };
 
-async function getAccessToken(): Promise<string | null> {
-  // Placeholder — auth token retrieval will be implemented in Step 8
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("access_token");
-}
-
 async function refreshAccessToken(): Promise<string | null> {
-  // Placeholder — refresh logic finalized in Step 8
-  return null;
+  const res = await fetch("/api/auth/refresh", { method: "POST" });
+  if (!res.ok) {
+    notify.warning("Session expired. Please sign in again.");
+    _clearTokensFn?.();
+    return null;
+  }
+  const data = (await res.json()) as { access?: string };
+  if (!data.access) {
+    notify.warning("Session expired. Please sign in again.");
+    _clearTokensFn?.();
+    return null;
+  }
+  updateAccessToken(data.access);
+  return data.access;
 }
 
 export async function apiClient<T>(
   path: string,
   options: FetchOptions = {}
 ): Promise<T> {
-  const token = await getAccessToken();
+  const token = getTokenFromContext();
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -48,6 +71,7 @@ export async function apiClient<T>(
       }
       return retryResponse.json() as Promise<T>;
     }
+    _clearTokensFn?.();
     throw new Error("Unauthorized");
   }
 

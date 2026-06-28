@@ -1,7 +1,21 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { SessionProvider } from "next-auth/react";
+
+import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { registerAuthHandlers } from "@/lib/api-client";
+
+function ApiClientBridge() {
+  const { setTokens, clearTokens } = useAuth();
+
+  useEffect(() => {
+    registerAuthHandlers(setTokens, clearTokens);
+  }, [setTokens, clearTokens]);
+
+  return null;
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -17,6 +31,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <SessionProvider>
+      <AuthProvider>
+        <ApiClientBridge />
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </AuthProvider>
+    </SessionProvider>
   );
 }
